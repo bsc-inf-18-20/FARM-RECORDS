@@ -110,7 +110,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         controller: _firstNameController,
                         decoration: const InputDecoration(
                           labelText: 'First Name',
-                          prefixIcon: Icon(Icons.person),
+                          prefixIcon: Icon(Icons.person,
+                              color: Color.fromARGB(255, 44, 133, 8)),
                           border: OutlineInputBorder(),
                         ),
                       ),
@@ -119,7 +120,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         controller: _surnameController,
                         decoration: const InputDecoration(
                           labelText: 'Surname',
-                          prefixIcon: Icon(Icons.person_outline),
+                          prefixIcon: Icon(Icons.person_outline,
+                              color: Color.fromARGB(255, 44, 133, 8)),
                           border: OutlineInputBorder(),
                         ),
                       ),
@@ -128,7 +130,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         controller: _emailController,
                         decoration: const InputDecoration(
                           labelText: 'Email',
-                          prefixIcon: Icon(Icons.email),
+                          prefixIcon: Icon(Icons.email,
+                              color: Color.fromARGB(255, 44, 133, 8)),
                           border: OutlineInputBorder(),
                         ),
                       ),
@@ -138,7 +141,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         obscureText: true,
                         decoration: const InputDecoration(
                           labelText: 'Password',
-                          prefixIcon: Icon(Icons.lock),
+                          prefixIcon: Icon(Icons.lock,
+                              color: Color.fromARGB(255, 44, 133, 8)),
                           border: OutlineInputBorder(),
                         ),
                       ),
@@ -148,7 +152,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         obscureText: true,
                         decoration: const InputDecoration(
                           labelText: 'Confirm Password',
-                          prefixIcon: Icon(Icons.lock_outline),
+                          prefixIcon: Icon(Icons.lock_outline,
+                              color: Color.fromARGB(255, 44, 133, 8)),
                           border: OutlineInputBorder(),
                         ),
                       ),

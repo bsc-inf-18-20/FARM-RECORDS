@@ -1,13 +1,12 @@
-import 'package:farmrecord/pages/HomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'sign_up.dart';
+import 'package:farmrecord/pages/HomePage.dart';
+import 'package:farmrecord/pages/sign_up.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _LoginPageState createState() => _LoginPageState();
 }
 
@@ -21,6 +20,7 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _isLoading = true;
     });
+
     try {
       final UserCredential userCredential =
           await _auth.signInWithEmailAndPassword(
@@ -28,19 +28,23 @@ class _LoginPageState extends State<LoginPage> {
         password: _passwordController.text.trim(),
       );
 
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login successful!')),
+      );
+
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => HomePage(user: userCredential.user),
+          builder: (context) => HomePage(
+            user: userCredential.user, // Pass user to HomePage
+          ),
         ),
       );
     } on FirebaseAuthException catch (e) {
-      String message = 'An error occurred. Please try again.';
+      String message = 'An error occurred, please try again';
       if (e.code == 'user-not-found') {
         message = 'No user found for that email.';
       } else if (e.code == 'wrong-password') {
-        message = 'Incorrect password. Please try again.';
-      } else if (e.code == 'invalid-email') {
-        message = 'Invalid email format. Please check your email.';
+        message = 'Wrong password provided for that user.';
       }
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(message)));
@@ -56,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Login',
+          'FarmRecord Login',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: const Color.fromARGB(255, 44, 133, 8),
@@ -66,8 +70,7 @@ class _LoginPageState extends State<LoginPage> {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                    "assets/background.jpg"), // Add your background image
+                image: AssetImage("assets/background.jpg"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -87,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const Text(
-                        'FARM RECORDS  APP',
+                        'FARM RECORDS APP',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -132,17 +135,29 @@ class _LoginPageState extends State<LoginPage> {
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) => const SignUpPage()),
-                          );
-                        },
-                        child: const Text(
-                          'Don\'t have an account? Sign up',
-                          style: TextStyle(color: Colors.deepPurple),
-                        ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Don\'t have an account? ',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const SignUpPage(),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              'Sign Up',
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 44, 133, 8)),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
