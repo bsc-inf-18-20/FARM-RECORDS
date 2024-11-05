@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'add_activity.dart'; // Import your add_activity.dart file
 
 class CropPage extends StatelessWidget {
   const CropPage({super.key});
@@ -33,8 +34,11 @@ class CropPage extends StatelessWidget {
   Widget _buildRoundedBox(BuildContext context, String title, IconData icon) {
     return GestureDetector(
       onTap: () {
-        // Implement navigation or functionality here
-        // Example: Navigator.push(context, MaterialPageRoute(builder: (context) => NextPage()));
+        if (title == 'Add New Activity') {
+          // Call the function to show the add activity dialog
+          showAddActivityDialog(context);
+        }
+        // You can implement navigation for other boxes similarly
       },
       child: Container(
         width: 200, // Adjusted width for a smaller box
