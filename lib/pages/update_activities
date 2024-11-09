@@ -1,0 +1,114 @@
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class UpdateActivity extends StatefulWidget {
+  final QueryDocumentSnapshot activityDoc;
+
+  const UpdateActivity({super.key, required this.activityDoc});
+
+  @override
+  _UpdateActivityState createState() => _UpdateActivityState();
+}
+
+class _UpdateActivityState extends State<UpdateActivity> {
+  final _formKey = GlobalKey<FormState>();
+  late TextEditingController _activityController;
+  late TextEditingController _cropController;
+  late TextEditingController _expenditureController;
+  late TextEditingController _incomeController;
+  late TextEditingController _farmNameController;
+
+  @override
+  void initState() {
+    super.initState();
+    final activityData = widget.activityDoc.data() as Map<String, dynamic>;
+    _activityController = TextEditingController(text: activityData['activity']);
+    _cropController = TextEditingController(text: activityData['crop']);
+    _expenditureController = TextEditingController(text: activityData['expenditure'].toString());
+    _incomeController = TextEditingController(text: activityData['income'].toString());
+    _farmNameController = TextEditingController(text: activityData['farmName']);
+  }
+
+  @override
+  void dispose() {
+    _activityController.dispose();
+    _cropController.dispose();
+    _expenditureController.dispose();
+    _incomeController.dispose();
+    _farmNameController.dispose();
+    super.dispose();
+  }
+
+  // Update activity function
+  void updateActivity() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      // Get the activity document reference
+      final docRef = widget.activityDoc.reference;
+
+      // Update the document in Firestore
+      await docRef.update({
+        'activity': _activityController.text,
+        'crop': _cropController.text,
+        'expenditure': double.tryParse(_expenditureController.text) ?? 0.0,
+        'income': double.tryParse(_incomeController.text) ?? 0.0,
+        'farmName': _farmNameController.text,
+      });
+
+      // Pop the screen after updating
+      Navigator.pop(context);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Update Activity'),
+        backgroundColor: const Color.fromARGB(255, 103, 58, 182),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _activityController,
+                decoration: const InputDecoration(labelText: 'Activity'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter an activity';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _cropController,
+                decoration: const InputDecoration(labelText: 'Crop'),
+              ),
+              TextFormField(
+                controller: _expenditureController,
+                decoration: const InputDecoration(labelText: 'Expenditure'),
+                keyboardType: TextInputType.number,
+              ),
+              TextFormField(
+                controller: _incomeController,
+                decoration: const InputDecoration(labelText: 'Income'),
+                keyboardType: TextInputType.number,
+              ),
+              TextFormField(
+                controller: _farmNameController,
+                decoration: const InputDecoration(labelText: 'Farm Name'),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: updateActivity,
+                child: const Text('Update Activity'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

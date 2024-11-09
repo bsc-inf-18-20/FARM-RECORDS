@@ -1,8 +1,9 @@
+import 'package:farmrecord/pages/home/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:farmrecord/pages/log_in.dart';
-import 'package:farmrecord/pages/HomePage.dart';
+import 'package:farmrecord/pages/home/HomePage.dart'; // Import the HomePage
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,7 +53,10 @@ class AuthenticationWrapper extends StatelessWidget {
         // Check if the user is logged in (snapshot has data)
         if (snapshot.hasData && snapshot.data != null) {
           // User is logged in, navigate to HomePage
-          return HomePage(user: snapshot.data!);
+          return HomePage(
+            user: snapshot.data!, // Pass the user to HomePage
+            appTheme: AppTheme(), // Pass the AppTheme instance to HomePage
+          );
         } else {
           // User is not logged in, show LoginPage
           return const LoginPage();

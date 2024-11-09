@@ -1,6 +1,7 @@
+import 'package:farmrecord/pages/home/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:farmrecord/pages/HomePage.dart';
+import 'package:farmrecord/pages/home/HomePage.dart';
 import 'package:farmrecord/pages/sign_up.dart';
 
 class LoginPage extends StatefulWidget {
@@ -36,6 +37,7 @@ class _LoginPageState extends State<LoginPage> {
         MaterialPageRoute(
           builder: (context) => HomePage(
             user: userCredential.user, // Pass user to HomePage
+            appTheme: AppTheme(), // Pass the AppTheme instance to HomePage
           ),
         ),
       );

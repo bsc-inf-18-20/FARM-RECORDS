@@ -6,7 +6,6 @@ class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _SignUpPageState createState() => _SignUpPageState();
 }
 
@@ -67,7 +66,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Create New account',
+          'Create New Account',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: const Color.fromARGB(255, 44, 133, 8),
@@ -106,25 +105,6 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      TextField(
-                        controller: _firstNameController,
-                        decoration: const InputDecoration(
-                          labelText: 'First Name',
-                          prefixIcon: Icon(Icons.person,
-                              color: Color.fromARGB(255, 44, 133, 8)),
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      TextField(
-                        controller: _surnameController,
-                        decoration: const InputDecoration(
-                          labelText: 'Surname',
-                          prefixIcon: Icon(Icons.person_outline,
-                              color: Color.fromARGB(255, 44, 133, 8)),
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
                       const SizedBox(height: 16),
                       TextField(
                         controller: _emailController,
@@ -174,19 +154,6 @@ class _SignUpPageState extends State<SignUpPage> {
                               ),
                             ),
                       const SizedBox(height: 10),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const LoginPage(),
-                            ),
-                          );
-                        },
-                        child: const Text(
-                          '',
-                          style: TextStyle(color: Colors.deepPurple),
-                        ),
-                      ),
                     ],
                   ),
                 ),
