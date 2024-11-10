@@ -30,7 +30,7 @@ class ViewYieldsPage extends StatelessWidget {
               return ListTile(
                 title: Text(data['crop'] ?? 'No Crop'),
                 subtitle: Text(
-                  'Field: ${data['field_plot']}, Hectare: ${data['hectare']}, Yield: ${data['yield']}',
+                  'crop : ${data['crop']},   Field: ${data['field_plot']},   Hectare: ${data['hectare']},     Yield: ${data['yield']}',
                 ),
                 trailing: Text(
                   (data['date'] as Timestamp)

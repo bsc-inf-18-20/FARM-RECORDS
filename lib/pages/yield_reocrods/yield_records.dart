@@ -1,5 +1,5 @@
-import 'package:farmrecord/pages/labour%20records/labour_activity.dart';
 import 'package:farmrecord/pages/yield_reocrods/view_yields.dart';
+import 'package:farmrecord/pages/yield_reocrods/yeild_activities.dart';
 import 'package:flutter/material.dart';
 
 class YieldRecords extends StatelessWidget {
@@ -9,7 +9,7 @@ class YieldRecords extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Labour Records'),
+        title: const Text('Yield Records'),
       ),
       body: Center(
         child: Column(
@@ -35,7 +35,7 @@ class YieldRecords extends StatelessWidget {
           // Navigate to LabourActivityPage
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const LabourActivityPage()),
+            MaterialPageRoute(builder: (context) => const YieldActivityPage()),
           );
         } else if (title == 'View Activities') {
           // Navigate to ViewActivitiesPage
