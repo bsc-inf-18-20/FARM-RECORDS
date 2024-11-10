@@ -1,14 +1,15 @@
+import 'package:farmrecord/pages/labour%20records/labour_activity.dart';
+import 'package:farmrecord/pages/labour%20records/view_activities.dart';
 import 'package:flutter/material.dart';
-import '../add_activity.dart'; // Import your add_activity.dart file
 
-class MilkProductionPage extends StatelessWidget {
-  const MilkProductionPage({super.key});
+class LabourPage extends StatelessWidget {
+  const LabourPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Milk Production Records'),
+        title: const Text('Labour Records'),
       ),
       body: Center(
         child: Column(
@@ -31,14 +32,27 @@ class MilkProductionPage extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (title == 'Add New Activity') {
-          showAddActivityDialog(context);
+          // Navigate to LabourActivityPage
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const LabourActivityPage()),
+          );
+        } else if (title == 'View Activities') {
+          // Navigate to ViewActivitiesPage
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    const ViewActivitiesPage()), // Ensure this page exists
+          );
         }
+        // Add additional conditions here for "Update Activity" and "Delete Activity"
       },
       child: Container(
         width: 200,
         height: 50,
         decoration: BoxDecoration(
-          color: Colors.blueAccent,
+          color: Colors.teal,
           borderRadius: BorderRadius.circular(10),
         ),
         alignment: Alignment.center,

@@ -21,7 +21,7 @@ class AppTheme implements IAppTheme {
   Color get appBarColor => Colors.blueAccent;
 
   @override
-  Color get buttonColor => Color.fromARGB(255, 44, 133, 8);
+  Color get buttonColor => Colors.teal;
 
   @override
   Color get buttonTextColor => Colors.white;

@@ -1,29 +1,26 @@
+import 'package:farmrecord/pages/labour%20records/labour_activity.dart';
+import 'package:farmrecord/pages/yield_reocrods/view_yields.dart';
 import 'package:flutter/material.dart';
-import 'add_activity.dart'; // Import your add_activity.dart file
 
-class CropPage extends StatelessWidget {
-  const CropPage({super.key});
+class YieldRecords extends StatelessWidget {
+  const YieldRecords({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Crop Activities'),
+        title: const Text('Labour Records'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Rounded box for Add New Activity
             _buildRoundedBox(context, 'Add New Activity', Icons.add),
-            const SizedBox(height: 15), // Space between the boxes
-            // Rounded box for Update Activity
+            const SizedBox(height: 15),
             _buildRoundedBox(context, 'Update Activity', Icons.edit),
-            const SizedBox(height: 15), // Space between the boxes
-            // Rounded box for View Activities
+            const SizedBox(height: 15),
             _buildRoundedBox(context, 'View Activities', Icons.visibility),
-            const SizedBox(height: 15), // Space between the boxes
-            // Rounded box for Delete Activity
+            const SizedBox(height: 15),
             _buildRoundedBox(context, 'Delete Activity', Icons.delete),
           ],
         ),
@@ -35,18 +32,28 @@ class CropPage extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (title == 'Add New Activity') {
-          // Call the function to show the add activity dialog
-          showAddActivityDialog(context);
+          // Navigate to LabourActivityPage
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const LabourActivityPage()),
+          );
+        } else if (title == 'View Activities') {
+          // Navigate to ViewActivitiesPage
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    const ViewYieldsPage()), // Ensure this page exists
+          );
         }
-        // You can implement navigation for other boxes similarly
+        // Add additional conditions here for "Update Activity" and "Delete Activity"
       },
       child: Container(
-        width: 200, // Adjusted width for a smaller box
-        height: 50, // Adjusted height for a smaller box
+        width: 200,
+        height: 50,
         decoration: BoxDecoration(
-          color: Colors.blueAccent, // Background color
-          borderRadius:
-              BorderRadius.circular(10), // Slightly smaller rounded corners
+          color: Colors.teal,
+          borderRadius: BorderRadius.circular(10),
         ),
         alignment: Alignment.center,
         child: Row(
@@ -55,14 +62,14 @@ class CropPage extends StatelessWidget {
             Icon(
               icon,
               color: Colors.white,
-              size: 24, // Smaller size for the icon
+              size: 24,
             ),
-            const SizedBox(width: 10), // Space between the icon and text
+            const SizedBox(width: 10),
             Text(
               title,
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 16, // Smaller font size for the text
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
