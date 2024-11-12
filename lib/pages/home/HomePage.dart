@@ -51,6 +51,10 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text(
           '      FARM MANAGEMENT',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         backgroundColor: widget.appTheme.appBarColor,
       ),
