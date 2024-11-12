@@ -1,112 +1,135 @@
+import 'package:farmrecord/pages/home/app_theme.dart';
+import 'package:farmrecord/pages/crop%20management/crop_management.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'home_content.dart'; // Import HomeContent class
-import 'settings_page.dart'; // Import SettingsPage class
-import 'profile_page.dart'; // Import ProfilePage class
-import 'app_theme.dart'; // Import AppTheme class
 
-class HomePage extends StatelessWidget {
-  final User? user;
-  final IAppTheme appTheme;
+class HomePage extends StatefulWidget {
+  final User user;
+  final AppTheme appTheme;
 
-  const HomePage({super.key, required this.user, required this.appTheme});
-
-  @override
-  Widget build(BuildContext context) {
-    return HomePageBody(appTheme: appTheme, user: user);
-  }
-}
-
-class HomePageBody extends StatefulWidget {
-  final User? user;
-  final IAppTheme appTheme;
-
-  const HomePageBody({super.key, required this.user, required this.appTheme});
+  const HomePage({
+    Key? key,
+    required this.user,
+    required this.appTheme,
+  }) : super(key: key);
 
   @override
-  _HomePageBodyState createState() => _HomePageBodyState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageBodyState extends State<HomePageBody> {
+class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
-    const HomeContent(),
-    const SettingsPage(),
-    const ProfilePage(),
-  ];
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    // Show a message or navigate based on index
+    switch (index) {
+      case 0:
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Home selected')),
+        );
+        break;
+      case 1:
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile selected')),
+        );
+        break;
+      case 2:
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Settings selected')),
+        );
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(context),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/background.jpg'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
+      appBar: AppBar(
+        title: const Text(
+          '      FARM MANAGEMENT',
+        ),
+        backgroundColor: widget.appTheme.appBarColor,
+      ),
+      body: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/background.jpg'),
+            fit: BoxFit.cover,
           ),
-          Column(
-            children: [
-              Expanded(
-                child: _pages[_selectedIndex],
-              ),
-            ],
-          ),
-        ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(height: 30),
+            _buildRoundedBox(
+                context, 'Crop Management', widget.appTheme.primaryColor),
+            const SizedBox(height: 20),
+            _buildRoundedBox(context, 'Animal Management', Colors.orange),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: widget.appTheme.bottomNavBarColor,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.settings), label: 'Settings'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
         ],
         currentIndex: _selectedIndex,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-        selectedItemColor: widget.appTheme.buttonTextColor,
-        unselectedItemColor: widget.appTheme.unselectedIconColor,
+        selectedItemColor: widget.appTheme.primaryColor,
+        unselectedItemColor: Colors.grey,
+        onTap: _onItemTapped,
       ),
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
-    return AppBar(
-      automaticallyImplyLeading: false,
-      backgroundColor: widget.appTheme.appBarColor,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'Farm Records',
-            style: TextStyle(
+  Widget _buildRoundedBox(BuildContext context, String title, Color color) {
+    return GestureDetector(
+      onTap: () {
+        if (title == 'Crop Management') {
+          // Navigate to HomeContent if Crop Production is tapped
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CropManagement()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('$title tapped')),
+          );
+        }
+      },
+      child: Container(
+        width: 280,
+        height: 100,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.9),
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: color, width: 2),
+        ),
+        child: Center(
+          child: Text(
+            title,
+            style: widget.appTheme.textStyle.copyWith(
+              fontSize: 20,
               fontWeight: FontWeight.bold,
-              fontSize: 22,
-              color: widget.appTheme.buttonTextColor,
+              color: color,
             ),
           ),
-        ],
-      ),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.logout),
-          onPressed: () async {
-            await FirebaseAuth.instance.signOut();
-            Navigator.of(context).popUntil((route) => route.isFirst);
-          },
         ),
-      ],
+      ),
     );
   }
 }

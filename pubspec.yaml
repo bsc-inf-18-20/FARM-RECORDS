@@ -27,3 +27,7 @@ flutter:
 
   assets:
     - assets/background.jpg
+    - assets/images/farming.jpg
+    - assets/image1.jpg
+    # - assets/image2.jpg
+    # - assets/image3.jpg
