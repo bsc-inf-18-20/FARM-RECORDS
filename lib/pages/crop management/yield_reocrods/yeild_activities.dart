@@ -134,10 +134,10 @@ class _YieldActivityPageState extends State<YieldActivityPage> {
                 _buildTextFormField(_fieldController, 'Field or Plot',
                     icon: Icons.pin_drop, isTextOnly: true),
                 const SizedBox(height: 15),
-                _buildTextFormField(_hectareController, 'Hectares',
+                _buildTextFormField(_hectareController, 'hectares',
                     icon: Icons.square_foot, inputType: TextInputType.number),
                 const SizedBox(height: 15),
-                _buildTextFormField(_yieldController, 'Yield',
+                _buildTextFormField(_yieldController, 'yields in KGs',
                     icon: Icons.show_chart, inputType: TextInputType.number),
                 const SizedBox(height: 20),
                 ElevatedButton(

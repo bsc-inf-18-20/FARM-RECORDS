@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'update_yields.dart'; // Import the UpdateYieldPage
 
 class ViewYieldsPage extends StatelessWidget {
   const ViewYieldsPage({super.key});
@@ -119,7 +120,7 @@ class ViewYieldsPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Field: ${data['field_plot'] ?? 'N/A'}, Hectare: ${data['hectare'] ?? 'N/A'}',
+                          'Field: ${data['field_plot'] ?? 'N/A'}, hectares: ${data['hectares'] ?? 'N/A'}',
                           style: const TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
@@ -127,7 +128,7 @@ class ViewYieldsPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          'Yield: ${data['yield'] ?? 'N/A'}',
+                          'yields in KGs: ${data['yields in KGs'] ?? 'N/A'}',
                           style: const TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
@@ -142,11 +143,13 @@ class ViewYieldsPage extends StatelessWidget {
                       IconButton(
                         icon: const Icon(Icons.edit),
                         onPressed: () {
-                          // Navigate to the edit page (logic can be added here)
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content:
-                                    Text('Edit feature not implemented yet.')),
+                          // Navigate to the UpdateYieldPage with the record's ID
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  UpdateYieldPage(yieldId: doc.id),
+                            ),
                           );
                         },
                       ),
