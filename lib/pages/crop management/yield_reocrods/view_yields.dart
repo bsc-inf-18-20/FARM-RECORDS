@@ -120,7 +120,7 @@ class ViewYieldsPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Field: ${data['field_plot'] ?? 'N/A'}, hectares: ${data['hectares'] ?? 'N/A'}',
+                          'field_plot: ${data['field_plot'] ?? 'N/A'}, hectares: ${data['hectares'] ?? 'N/A'}',
                           style: const TextStyle(
                             fontSize: 14,
                             color: Colors.grey,

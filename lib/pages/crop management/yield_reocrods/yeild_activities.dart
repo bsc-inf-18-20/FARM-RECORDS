@@ -14,7 +14,6 @@ class YieldActivityPage extends StatefulWidget {
   });
 
   @override
-  // ignore: library_private_types_in_public_api
   _YieldActivityPageState createState() => _YieldActivityPageState();
 }
 
@@ -132,7 +131,7 @@ class _YieldActivityPageState extends State<YieldActivityPage> {
                     icon: Icons.local_florist, isTextOnly: true),
                 const SizedBox(height: 15),
                 _buildTextFormField(_fieldController, 'Field or Plot',
-                    icon: Icons.pin_drop, isTextOnly: true),
+                    icon: Icons.pin_drop, inputType: TextInputType.number),
                 const SizedBox(height: 15),
                 _buildTextFormField(_hectareController, 'hectares',
                     icon: Icons.square_foot, inputType: TextInputType.number),
