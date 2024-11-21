@@ -1,6 +1,6 @@
-import 'package:farmrecord/pages/crop%20management/yield_reocrods/view_yields.dart';
-import 'package:farmrecord/pages/crop%20management/yield_reocrods/yeild_activities.dart';
+import 'package:farmrecord/pages/crop%20management/field%20operation%20records/view_field_operation.dart';
 import 'package:flutter/material.dart';
+import 'package:farmrecord/pages/crop%20management/field%20operation%20records/field_operation_activities.dart'; // Ensure this import is correct
 
 class FieldOperationRecords extends StatefulWidget {
   const FieldOperationRecords({super.key});
@@ -14,14 +14,16 @@ class FieldOperationRecordsState extends State<FieldOperationRecords> {
   void _navigateToAddActivity(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const YieldActivityPage()),
+      MaterialPageRoute(builder: (context) => const FieldOperationActivities()),
     );
   }
 
   void _navigateToViewActivities(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const ViewYieldsPage()),
+      MaterialPageRoute(
+          builder: (context) =>
+              const ViewFieldOperationActivities()), // Navigate to the view page
     );
   }
 

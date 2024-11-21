@@ -1,4 +1,5 @@
 import 'package:farmrecord/pages/crop%20management/crop%20records/crop%20activity/crop_view.dart';
+import 'package:farmrecord/pages/crop%20management/field%20operation%20records/field_operation_records.dart';
 import 'package:farmrecord/pages/home/app_theme.dart';
 import 'package:farmrecord/pages/crop%20management/labour%20records/labour_records.dart';
 // import 'package:farmrecord/pages/records/financial_records';
@@ -75,13 +76,14 @@ class CropManagement extends StatelessWidget {
                       );
                     }),
                     const SizedBox(height: 15),
-                    // _buildRoundedBox(context, 'Financial Records', () {
-                    //   Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => const FinancialPage()),
-                    //   );
-                    // }),
+                    _buildRoundedBox(context, 'Field operation Records', () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const FieldOperationRecords()),
+                      );
+                    }),
                   ],
                 ),
               ),
