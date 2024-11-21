@@ -55,7 +55,7 @@ class ViewActivitiesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('View Labour Activities'),
+        title: const Text('Labour Records Activities'),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream:

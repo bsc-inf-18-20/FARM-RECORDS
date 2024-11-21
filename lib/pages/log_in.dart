@@ -16,6 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
+  bool _isPasswordVisible = false; // Password visibility state
 
   Future<void> _login() async {
     setState(() {
@@ -37,13 +38,12 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => HomePage(
-              user: userCredential.user!, // Use non-null assertion
-              appTheme: AppTheme(), // Pass the AppTheme instance to HomePage
+              user: userCredential.user!,
+              appTheme: AppTheme(),
             ),
           ),
         );
       } else {
-        // Show an error if user is null
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('User could not be retrieved.')),
         );
@@ -120,12 +120,25 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 16),
                       TextField(
                         controller: _passwordController,
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          prefixIcon: Icon(Icons.lock,
+                        obscureText: !_isPasswordVisible, // Toggle visibility
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.lock,
                               color: Color.fromARGB(255, 44, 133, 8)),
                           labelText: 'Password',
-                          border: OutlineInputBorder(),
+                          border: const OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _isPasswordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: Colors.grey,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isPasswordVisible = !_isPasswordVisible;
+                              });
+                            },
+                          ),
                         ),
                       ),
                       const SizedBox(height: 20),

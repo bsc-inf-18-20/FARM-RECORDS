@@ -1,5 +1,6 @@
 import 'package:farmrecord/pages/home/app_theme.dart';
 import 'package:farmrecord/pages/crop%20management/crop_management.dart';
+import 'package:farmrecord/pages/log_in.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -45,6 +46,14 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> _logout() async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+      (Route<dynamic> route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,10 +66,16 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         backgroundColor: widget.appTheme.appBarColor,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.white),
+            onPressed: _logout,
+          ),
+        ],
       ),
       body: Container(
         width: double.infinity,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/background.jpg'),
             fit: BoxFit.cover,
@@ -104,7 +119,6 @@ class _HomePageState extends State<HomePage> {
     return GestureDetector(
       onTap: () {
         if (title == 'Crop Management') {
-          // Navigate to HomeContent if Crop Production is tapped
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => CropManagement()),

@@ -17,11 +17,7 @@ class YieldRecords extends StatelessWidget {
           children: [
             _buildRoundedBox(context, 'Add New Activity', Icons.add),
             const SizedBox(height: 15),
-            _buildRoundedBox(context, 'Update Activity', Icons.edit),
-            const SizedBox(height: 15),
             _buildRoundedBox(context, 'View Activities', Icons.visibility),
-            const SizedBox(height: 15),
-            _buildRoundedBox(context, 'Delete Activity', Icons.delete),
           ],
         ),
       ),

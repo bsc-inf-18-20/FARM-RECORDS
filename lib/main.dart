@@ -3,18 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:farmrecord/pages/log_in.dart';
-import 'package:farmrecord/pages/home/HomePage.dart'; // Import the HomePage
+import 'package:farmrecord/pages/home/HomePage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  try {
-    await Firebase.initializeApp(); // Initialize Firebase
-    print("Firebase initialized successfully.");
-  } catch (e) {
-    print("Error initializing Firebase: $e");
-  }
-
+  await Firebase.initializeApp(); // Initialize Firebase
   runApp(const MyApp());
 }
 
@@ -24,17 +17,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'FarmRecord App',
+      title: 'Farm Management',
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
       home:
-          const AuthenticationWrapper(), // Use AuthenticationWrapper to determine the initial screen
+          const AuthenticationWrapper(), // Use AuthenticationWrapper for initial screen
     );
   }
 }
 
-// Wrapper widget to handle user authentication state and initial screen
 class AuthenticationWrapper extends StatelessWidget {
   const AuthenticationWrapper({super.key});
 
@@ -47,18 +39,14 @@ class AuthenticationWrapper extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
-        // Log the authentication state
-        print("Auth state: ${snapshot.hasData ? 'Logged In' : 'Logged Out'}");
-
-        // Check if the user is logged in (snapshot has data)
         if (snapshot.hasData && snapshot.data != null) {
-          // User is logged in, navigate to HomePage
+          // User is logged in, show HomePage
           return HomePage(
-            user: snapshot.data!, // Pass the user to HomePage
-            appTheme: AppTheme(), // Pass the AppTheme instance to HomePage
+            user: snapshot.data!,
+            appTheme: AppTheme(),
           );
         } else {
-          // User is not logged in, show LoginPage
+          // No user logged in, show LoginPage
           return const LoginPage();
         }
       },

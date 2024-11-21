@@ -1,8 +1,7 @@
-import 'package:farmrecord/pages/records/crop.dart';
+import 'package:farmrecord/pages/crop%20management/crop%20records/crop%20activity/crop_view.dart';
 import 'package:farmrecord/pages/home/app_theme.dart';
 import 'package:farmrecord/pages/crop%20management/labour%20records/labour_records.dart';
-import 'package:farmrecord/pages/records/financial_records';
-import 'package:farmrecord/pages/records/operation_records.dart';
+// import 'package:farmrecord/pages/records/financial_records';
 import 'package:farmrecord/pages/crop%20management/yield_reocrods/yield_records.dart';
 import 'package:flutter/material.dart';
 
@@ -43,19 +42,20 @@ class CropManagement extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 150),
-                    _buildRoundedBox(context, 'Field Operations Records', () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const FieldOperationsPage()),
-                      );
-                    }),
-                    const SizedBox(height: 15),
+                    // _buildRoundedBox(context, 'Field Operations Records', () {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => const FieldOperationsPage()),
+                    //   );
+                    // }),
+                    // const SizedBox(height: 15),
+
                     _buildRoundedBox(context, 'Crop Records', () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const CropPage()),
+                            builder: (context) => const CropRecordsPage()),
                       );
                     }),
                     const SizedBox(height: 15),
@@ -75,13 +75,13 @@ class CropManagement extends StatelessWidget {
                       );
                     }),
                     const SizedBox(height: 15),
-                    _buildRoundedBox(context, 'Financial Records', () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const FinancialPage()),
-                      );
-                    }),
+                    // _buildRoundedBox(context, 'Financial Records', () {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => const FinancialPage()),
+                    //   );
+                    // }),
                   ],
                 ),
               ),
