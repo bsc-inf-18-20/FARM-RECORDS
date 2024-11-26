@@ -8,7 +8,7 @@ class CropActivityRepository {
       // Ensure the 'date' field is correctly formatted as a Firestore Timestamp
       if (data['date'] is DateTime) {
         // Add the activity to Firestore under the 'cropRecords' collection
-        await _firestore.collection('cropRecords').add({
+        await _firestore.collection('crop_activities').add({
           ...data,
           'date': Timestamp.fromDate(
               data['date']), // Convert DateTime to Firestore Timestamp

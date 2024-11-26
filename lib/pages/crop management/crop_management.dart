@@ -1,10 +1,11 @@
-import 'package:farmrecord/pages/crop%20management/crop%20records/crop%20activity/crop_view.dart';
 import 'package:farmrecord/pages/crop%20management/field%20operation%20records/field_operation_records.dart';
 import 'package:farmrecord/pages/home/app_theme.dart';
 import 'package:farmrecord/pages/crop%20management/labour%20records/labour_records.dart';
 // import 'package:farmrecord/pages/records/financial_records';
 import 'package:farmrecord/pages/crop%20management/yield_reocrods/yield_records.dart';
 import 'package:flutter/material.dart';
+
+import 'crop records/crop_records.dart';
 
 class CropManagement extends StatelessWidget {
   const CropManagement({super.key});
