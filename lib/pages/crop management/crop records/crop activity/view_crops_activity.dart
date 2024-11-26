@@ -18,6 +18,24 @@ class ViewCropsActivity extends StatelessWidget {
         .snapshots();
   }
 
+  // Delete activity from Firestore
+  Future<void> _deleteActivity(BuildContext context, String activityId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('crop_activities')
+          .doc(activityId)
+          .delete();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Activity deleted successfully.')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete activity: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,20 +84,33 @@ class ViewCropsActivity extends StatelessWidget {
                               fontSize: 16,
                             ),
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.blue),
-                            tooltip: 'Edit Activity',
-                            onPressed: () {
-                              // Navigate to UpdateCropRecords page with activityId
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => EditCropActivity(
-                                    activityId: activityId,
-                                  ),
-                                ),
-                              );
-                            },
+                          Row(
+                            children: [
+                              IconButton(
+                                icon:
+                                    const Icon(Icons.edit, color: Colors.blue),
+                                tooltip: 'Edit Activity',
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => EditCropActivity(
+                                        activityId: activityId,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              IconButton(
+                                icon:
+                                    const Icon(Icons.delete, color: Colors.red),
+                                tooltip: 'Delete Activity',
+                                onPressed: () {
+                                  _showDeleteConfirmationDialog(
+                                      context, activityId);
+                                },
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -128,6 +159,29 @@ class ViewCropsActivity extends StatelessWidget {
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           Text(value.toString()),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteConfirmationDialog(BuildContext context, String activityId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Activity'),
+        content: const Text('Are you sure you want to delete this activity?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context), // Cancel button
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close the dialog
+              _deleteActivity(context, activityId); // Perform deletion
+            },
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
         ],
       ),
     );
