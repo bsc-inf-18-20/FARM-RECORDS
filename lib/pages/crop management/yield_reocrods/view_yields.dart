@@ -1,52 +1,43 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'update_yields.dart'; // Import the UpdateYieldPage
+import 'package:flutter/material.dart';
+import 'update_yields.dart';
 
 class ViewYieldsPage extends StatelessWidget {
-  const ViewYieldsPage({super.key});
+  final Color cardColor;
 
-  // Method to delete a yield record from Firestore
+  const ViewYieldsPage({
+    Key? key,
+    required this.cardColor,
+  }) : super(key: key);
+
+  // Fetch yield records from Firestore
+  Stream<QuerySnapshot<Map<String, dynamic>>> _fetchYields() {
+    return FirebaseFirestore.instance
+        .collection('yield_records')
+        .orderBy('date', descending: true)
+        .snapshots();
+  }
+
+  // Delete yield record from Firestore
   Future<void> _deleteYield(BuildContext context, String yieldId) async {
     try {
-      // Show a confirmation dialog before deletion
-      bool confirmDelete = await showDialog<bool>(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Confirm Deletion'),
-                content:
-                    const Text('Are you sure you want to delete this record?'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text('Cancel'),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: const Text('Delete'),
-                  ),
-                ],
-              );
-            },
-          ) ??
-          false;
+      await FirebaseFirestore.instance
+          .collection('yield_records')
+          .doc(yieldId)
+          .delete();
 
-      if (confirmDelete) {
-        // Perform deletion
-        await FirebaseFirestore.instance
-            .collection('yield_records')
-            .doc(yieldId)
-            .delete();
-
-        // Show a success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Yield record deleted successfully')),
-        );
-      }
-    } catch (e) {
-      // Show error message if deletion fails
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error deleting yield record: $e')),
+        SnackBar(
+          content: const Text('Yield record deleted successfully.'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to delete yield record: $e'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -55,110 +46,113 @@ class ViewYieldsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Saved Yield Records'),
+        title: const Text(
+          'Yield Records',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: const Color(0xFF2E7D32), // Professional green
+        centerTitle: true,
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream:
-            FirebaseFirestore.instance.collection('yield_records').snapshots(),
+      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        stream: _fetchYields(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No yield records found.'));
+
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text('Error fetching data.',
+                  style: TextStyle(color: Colors.red)),
+            );
           }
 
-          return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (context, index) {
-              final doc = snapshot.data!.docs[index];
-              final data = doc.data() as Map<String, dynamic>;
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(
+              child: Text(
+                'No yield records found.',
+                style: TextStyle(fontSize: 18, color: Colors.grey),
+              ),
+            );
+          }
 
-              // Format the date
-              String formattedDate = '';
-              if (data['date'] != null && data['date'] is Timestamp) {
-                formattedDate = (data['date'] as Timestamp)
-                    .toDate()
-                    .toLocal()
-                    .toString()
-                    .split(' ')[0]; // Extracting just the date
-              }
+          final yields = snapshot.data!.docs;
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(8.0),
+            itemCount: yields.length,
+            itemBuilder: (context, index) {
+              final yieldRecord = yields[index].data();
+              final yieldId = yields[index].id;
 
               return Card(
-                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                elevation: 5,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12.0),
                 ),
-                child: ListTile(
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                elevation: 4,
+                color: Colors.white, // Set the background color to white
+                margin: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Text(
-                          data['crop'] ?? 'No Crop',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        formattedDate,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  subtitle: Padding(
-                    padding: const EdgeInsets.only(top: 5),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'field_plot: ${data['field_plot'] ?? 'N/A'}, hectares: ${data['hectares'] ?? 'N/A'}',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        Text(
-                          'yields in KGs: ${data['yields in KGs'] ?? 'N/A'}',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () {
-                          // Navigate to the UpdateYieldPage with the record's ID
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  UpdateYieldPage(yieldId: doc.id),
+                      // Title and Action Buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Yield Record #${index + 1}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Colors.black87,
                             ),
-                          );
-                        },
+                          ),
+                          Row(
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.edit,
+                                    color: Color.fromARGB(255, 82, 80, 80)),
+                                tooltip: 'Edit Yield',
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => UpdateYieldPage(
+                                        yieldId: yieldId,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              IconButton(
+                                icon:
+                                    const Icon(Icons.delete, color: Colors.red),
+                                tooltip: 'Delete Yield',
+                                onPressed: () {
+                                  _showDeleteConfirmationDialog(
+                                      context, yieldId);
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          // Call delete function when delete button is pressed
-                          _deleteYield(context, doc.id);
-                        },
+                      const Divider(),
+                      // Yield Details
+                      _buildInfoRow('Crop', yieldRecord['crop']),
+                      _buildInfoRow('Field Plot', yieldRecord['field_plot']),
+                      _buildInfoRow('Hectares', yieldRecord['hectares']),
+                      _buildInfoRow(
+                          'Yields in KGs', yieldRecord['yields in KGs']),
+                      _buildInfoRow(
+                        'Date',
+                        (yieldRecord['date'] as Timestamp)
+                            .toDate()
+                            .toLocal()
+                            .toString()
+                            .split(' ')[0],
                       ),
                     ],
                   ),
@@ -167,6 +161,64 @@ class ViewYieldsPage extends StatelessWidget {
             },
           );
         },
+      ),
+    );
+  }
+
+  // Helper function to create info rows
+  Widget _buildInfoRow(String title, dynamic value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            '$title:',
+            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+          ),
+          Flexible(
+            child: Text(
+              value.toString(),
+              textAlign: TextAlign.right,
+              style: const TextStyle(fontSize: 14, color: Colors.black87),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Function to show delete confirmation dialog
+  void _showDeleteConfirmationDialog(BuildContext context, String yieldId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          'Delete Yield Record',
+          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+        ),
+        content: const Text(
+          'Are you sure you want to delete this yield record? This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context), // Cancel button
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+            ),
+            onPressed: () {
+              Navigator.pop(context); // Close the dialog
+              _deleteYield(context, yieldId); // Perform deletion
+            },
+            child: const Text('Delete'),
+          ),
+        ],
       ),
     );
   }

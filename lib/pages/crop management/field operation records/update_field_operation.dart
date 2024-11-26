@@ -3,8 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UpdateFieldOperation extends StatefulWidget {
   final String yieldId; // The ID of the yield record to be updated
-  const UpdateFieldOperation({required this.yieldId, Key? key})
-      : super(key: key);
+  final Map<String, dynamic>? existingData; // Optional data to prefill the form
+
+  const UpdateFieldOperation({
+    required this.yieldId,
+    this.existingData,
+    Key? key,
+  }) : super(key: key);
 
   @override
   _UpdateFieldOperationState createState() => _UpdateFieldOperationState();
@@ -12,11 +17,12 @@ class UpdateFieldOperation extends StatefulWidget {
 
 class _UpdateFieldOperationState extends State<UpdateFieldOperation> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _cropController = TextEditingController();
-  final TextEditingController _plotController = TextEditingController();
-  final TextEditingController _activityController = TextEditingController();
-  final TextEditingController _typeController = TextEditingController();
-  final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _plotNumberController = TextEditingController();
+  final TextEditingController _plotSizeController = TextEditingController();
+  final TextEditingController _operationActivityController =
+      TextEditingController();
+  final TextEditingController _inputTypeController = TextEditingController();
+  final TextEditingController _inputAmountController = TextEditingController();
   DateTime? _selectedDate;
 
   // Validation for Text Only
@@ -48,39 +54,53 @@ class _UpdateFieldOperationState extends State<UpdateFieldOperation> {
     }
   }
 
-  // Load existing yield data
-  void _loadYieldData() async {
-    final doc = await FirebaseFirestore.instance
-        .collection('field_operation_records')
-        .doc(widget.yieldId)
-        .get();
-
-    if (doc.exists) {
-      final data = doc.data() as Map<String, dynamic>;
-      _cropController.text = data['crop'] ?? '';
-      _plotController.text = data['field_plot'] ?? '';
-      _activityController.text = data['activity'] ?? '';
-      _typeController.text = data['input_type'] ?? '';
-      _amountController.text = data['input_amount']?.toString() ?? '';
+  // Load existing data for the field operation
+  void _loadFieldOperationData() {
+    if (widget.existingData != null) {
+      final data = widget.existingData!;
+      _plotNumberController.text = data['plot_number'] ?? '';
+      _plotSizeController.text = data['plot_size_hectares']?.toString() ?? '';
+      _operationActivityController.text = data['operation_activity'] ?? '';
+      _inputTypeController.text = data['input_type'] ?? '';
+      _inputAmountController.text = data['input_amount_kg']?.toString() ?? '';
       _selectedDate = (data['date'] as Timestamp).toDate();
       setState(() {});
+    } else {
+      FirebaseFirestore.instance
+          .collection('field_operations')
+          .doc(widget.yieldId)
+          .get()
+          .then((doc) {
+        if (doc.exists) {
+          final data = doc.data() as Map<String, dynamic>;
+          _plotNumberController.text = data['plot_number'] ?? '';
+          _plotSizeController.text =
+              data['plot_size_hectares']?.toString() ?? '';
+          _operationActivityController.text = data['operation_activity'] ?? '';
+          _inputTypeController.text = data['input_type'] ?? '';
+          _inputAmountController.text =
+              data['input_amount_kg']?.toString() ?? '';
+          _selectedDate = (data['date'] as Timestamp).toDate();
+          setState(() {});
+        }
+      });
     }
   }
 
-  // Update the yield record in Firestore
-  void _updateYield() async {
+  // Update the field operation record in Firestore
+  void _updateFieldOperation() async {
     if (_formKey.currentState!.validate() && _selectedDate != null) {
       final updatedData = {
-        'crop': _cropController.text,
-        'field_plot': _plotController.text,
-        'activity': _activityController.text,
-        'input_type': _typeController.text,
-        'input_amount': double.tryParse(_amountController.text),
+        'plot_number': _plotNumberController.text,
+        'plot_size_hectares': double.tryParse(_plotSizeController.text),
+        'operation_activity': _operationActivityController.text,
+        'input_type': _inputTypeController.text,
+        'input_amount_kg': double.tryParse(_inputAmountController.text),
         'date': Timestamp.fromDate(_selectedDate!),
       };
 
       await FirebaseFirestore.instance
-          .collection('field_operation_records')
+          .collection('field_operations')
           .doc(widget.yieldId)
           .update(updatedData);
 
@@ -97,118 +117,74 @@ class _UpdateFieldOperationState extends State<UpdateFieldOperation> {
   @override
   void initState() {
     super.initState();
-    _loadYieldData();
+    _loadFieldOperationData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Update Yield Record'),
+        title: const Text('Update Field Operation Record'),
       ),
       body: SingleChildScrollView(
-        child: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: constraints.maxHeight,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // Date Picker
-                          InkWell(
-                            onTap: () => _selectDate(context),
-                            child: InputDecorator(
-                              decoration: InputDecoration(
-                                labelText: 'Select Date',
-                                prefixIcon: const Icon(Icons.calendar_today),
-                                border: OutlineInputBorder(),
-                                errorText: _selectedDate == null
-                                    ? 'Please choose a date'
-                                    : null,
-                              ),
-                              child: Text(
-                                _selectedDate == null
-                                    ? 'Choose Date'
-                                    : '${_selectedDate!.toLocal()}'
-                                        .split(' ')[0],
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 15),
-
-                          // Crop Name Input
-                          _buildTextFormField(_cropController, 'Crop Name',
-                              icon: Icons.local_florist, isTextOnly: true),
-                          const SizedBox(height: 15),
-
-                          // Plot No/Size Input
-                          _buildTextFormField(_plotController, 'Plot No/Size',
-                              icon: Icons.pin_drop,
-                              inputType: TextInputType.text),
-                          const SizedBox(height: 15),
-
-                          // Activity Input
-                          _buildTextFormField(
-                            _activityController,
-                            'Operation/Activity',
-                            icon: Icons.work,
-                            isTextOnly: true,
-                          ),
-                          const SizedBox(height: 15),
-
-                          // Input Type (e.g., fertilizer, pesticide)
-                          _buildTextFormField(
-                            _typeController,
-                            'Input Used (Type)',
-                            icon: Icons.add_circle_outline,
-                            isTextOnly: true,
-                          ),
-                          const SizedBox(height: 15),
-
-                          // Amount of Input Used
-                          _buildTextFormField(
-                            _amountController,
-                            'Amount Used (kg/l)',
-                            icon: Icons.attach_money,
-                            inputType: TextInputType.number,
-                          ),
-                          const SizedBox(height: 20),
-
-                          // Update Button
-                          ElevatedButton(
-                            onPressed: _updateYield,
-                            child: const Text('Update Yield'),
-                          ),
-                        ],
-                      ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                // Date Picker
+                InkWell(
+                  onTap: () => _selectDate(context),
+                  child: InputDecorator(
+                    decoration: InputDecoration(
+                      labelText: 'Select Date',
+                      prefixIcon: const Icon(Icons.calendar_today),
+                      border: OutlineInputBorder(),
+                      errorText:
+                          _selectedDate == null ? 'Please choose a date' : null,
+                    ),
+                    child: Text(
+                      _selectedDate == null
+                          ? 'Choose Date'
+                          : '${_selectedDate!.toLocal()}'.split(' ')[0],
                     ),
                   ),
                 ),
-              );
-            },
+                const SizedBox(height: 15),
+                // Input Fields
+                _buildTextFormField(_plotNumberController, 'Plot Number',
+                    Icons.pin_drop, false),
+                const SizedBox(height: 15),
+                _buildTextFormField(_plotSizeController, 'Plot Size (Hectares)',
+                    Icons.map, false),
+                const SizedBox(height: 15),
+                _buildTextFormField(_operationActivityController,
+                    'Operation Activity', Icons.work, true),
+                const SizedBox(height: 15),
+                _buildTextFormField(_inputTypeController, 'Input Type',
+                    Icons.add_circle_outline, true),
+                const SizedBox(height: 15),
+                _buildTextFormField(_inputAmountController, 'Input Amount (Kg)',
+                    Icons.attach_money, false),
+                const SizedBox(height: 20),
+                // Update Button
+                ElevatedButton(
+                  onPressed: _updateFieldOperation,
+                  child: const Text('Update'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  // Generic TextFormField builder
   Widget _buildTextFormField(TextEditingController controller, String labelText,
-      {required IconData icon,
-      TextInputType inputType = TextInputType.text,
-      bool isTextOnly = false}) {
+      IconData icon, bool isTextOnly) {
     return TextFormField(
       controller: controller,
-      keyboardType: inputType,
       decoration: InputDecoration(
         labelText: labelText,
         prefixIcon: Icon(icon),

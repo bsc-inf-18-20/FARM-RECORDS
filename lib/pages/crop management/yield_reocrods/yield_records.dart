@@ -1,6 +1,6 @@
-import 'package:farmrecord/pages/crop%20management/yield_reocrods/view_yields.dart';
-import 'package:farmrecord/pages/crop%20management/yield_reocrods/yeild_activities.dart';
 import 'package:flutter/material.dart';
+import 'view_yields.dart'; // Assuming this is where your ViewYieldsPage is
+import 'yeild_activities.dart'; // Assuming this is where your YieldActivityPage is
 
 class YieldRecords extends StatefulWidget {
   const YieldRecords({super.key});
@@ -21,7 +21,11 @@ class _YieldRecordsState extends State<YieldRecords> {
   void _navigateToViewActivities(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const ViewYieldsPage()),
+      MaterialPageRoute(
+        builder: (context) => const ViewYieldsPage(
+          cardColor: Color.fromARGB(255, 44, 133, 8), // Pass cardColor here
+        ),
+      ),
     );
   }
 
@@ -60,7 +64,7 @@ class _YieldRecordsState extends State<YieldRecords> {
           BoxShadow(
             color: Colors.black.withOpacity(0.2),
             blurRadius: 8,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -176,7 +180,7 @@ class RoundedBoxButton extends StatelessWidget {
             BoxShadow(
               color: Colors.black.withOpacity(0.2),
               blurRadius: 6,
-              offset: Offset(0, 3),
+              offset: const Offset(0, 3),
             ),
           ],
         ),

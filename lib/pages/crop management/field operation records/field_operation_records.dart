@@ -1,6 +1,6 @@
+import 'package:farmrecord/pages/crop%20management/field%20operation%20records/field_operation_page.dart';
 import 'package:farmrecord/pages/crop%20management/field%20operation%20records/view_field_operation.dart';
 import 'package:flutter/material.dart';
-import 'package:farmrecord/pages/crop%20management/field%20operation%20records/field_operation_activities.dart'; // Ensure this import is correct
 
 class FieldOperationRecords extends StatefulWidget {
   const FieldOperationRecords({super.key});
@@ -14,7 +14,7 @@ class FieldOperationRecordsState extends State<FieldOperationRecords> {
   void _navigateToAddActivity(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const FieldOperationActivities()),
+      MaterialPageRoute(builder: (context) => const FieldOperationPage()),
     );
   }
 
@@ -92,7 +92,7 @@ class YieldAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: const Text(
-        'Yield Records',
+        'Field operation Records',
         style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
       ),
       backgroundColor: const Color.fromARGB(255, 44, 133, 8),
