@@ -1,0 +1,39 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+    id "com.google.gms.google-services"  // Add Google services plugin here
+}
+
+android {
+    namespace = "com.example.farmrecord"
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"  // Set as string for compatibility
+    }
+
+    defaultConfig {
+        applicationId = "com.example.farmrecord"
+        minSdkVersion 23  // Set minSdkVersion to 23 to satisfy Firebase requirements
+        targetSdkVersion flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+    }
+
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.debug  // Change this to your release signing config in production
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}

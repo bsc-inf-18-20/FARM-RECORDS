@@ -1,0 +1,65 @@
+import 'package:flutter/material.dart';
+
+class AboutUsPage extends StatelessWidget {
+  const AboutUsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('About Us'),
+      ),
+      body: const Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            AboutSection(
+              title: 'About FarmRecords',
+              content:
+                  'FarmRecords is a comprehensive mobile application designed to help farmers efficiently manage their farm activities and records. '
+                  'Our goal is to simplify farm management through user-friendly features, enabling farmers to track their crops, income, expenses, and labor in one convenient platform.',
+            ),
+            SizedBox(height: 20),
+            AboutSection(
+              title: 'Contact Us',
+              content: 'support@farmrecordsapp.com\nPhone: +265 99 84 84 144',
+              isBold: true,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class AboutSection extends StatelessWidget {
+  final String title;
+  final String content;
+  final bool isBold;
+
+  const AboutSection({
+    super.key,
+    required this.title,
+    required this.content,
+    this.isBold = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 20),
+        Text(
+          content,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontWeight: isBold ? FontWeight.bold : FontWeight.normal),
+        ),
+      ],
+    );
+  }
+}
