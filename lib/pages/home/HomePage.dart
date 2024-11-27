@@ -1,6 +1,9 @@
+import 'package:farmrecord/pages/animalmanagement/animal_management.dart';
 import 'package:farmrecord/pages/home/app_theme.dart';
 import 'package:farmrecord/pages/crop%20management/crop_management.dart';
 import 'package:farmrecord/pages/log_in.dart';
+import 'package:farmrecord/pages/profile/user_profile.dart';
+import 'package:farmrecord/pages/settings/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -26,21 +29,23 @@ class _HomePageState extends State<HomePage> {
       _selectedIndex = index;
     });
 
-    // Show a message or navigate based on index
     switch (index) {
       case 0:
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Home selected')),
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AnimalManagement()),
         );
         break;
-      case 1:
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile selected')),
+      case 1: // Profile selected
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => UserProfile()),
         );
         break;
       case 2:
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Settings selected')),
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SettingsPage()),
         );
         break;
     }
@@ -124,8 +129,9 @@ class _HomePageState extends State<HomePage> {
             MaterialPageRoute(builder: (context) => CropManagement()),
           );
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('$title tapped')),
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AnimalManagement()),
           );
         }
       },

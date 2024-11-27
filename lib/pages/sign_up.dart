@@ -1,6 +1,6 @@
-import 'package:farmrecord/pages/log_in.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'log_in.dart'; // Import your login page
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -11,20 +11,25 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final _firstNameController = TextEditingController();
-  final _surnameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   bool _isLoading = false;
-  bool _isPasswordVisible = false; // For Password field
-  bool _isConfirmPasswordVisible = false; // For Confirm Password field
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   Future<void> _signUp() async {
-    if (_passwordController.text != _confirmPasswordController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Passwords do not match')),
-      );
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
+
+    if (password != confirmPassword) {
+      _showSnackBar('Passwords do not match');
+      return;
+    }
+
+    if (!_isValidEmail(email)) {
+      _showSnackBar('Please enter a valid email address');
       return;
     }
 
@@ -34,28 +39,28 @@ class _SignUpPageState extends State<SignUpPage> {
 
     try {
       await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
+        email: email,
+        password: password,
       );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Account created successfully. Please log in.'),
-        ),
-      );
+      // Show success message
+      _showSnackBar('The account is successfully created');
 
+      // Delay to let the user read the message
+      await Future.delayed(const Duration(seconds: 2));
+
+      // Navigate to login page
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const LoginPage()),
       );
     } on FirebaseAuthException catch (e) {
-      String message = 'An error occurred, please try again';
+      String message = 'An error occurred, please try again.';
       if (e.code == 'email-already-in-use') {
-        message = 'The account already exists for that email.';
+        message = 'The email address is already in use.';
       } else if (e.code == 'weak-password') {
-        message = 'The password provided is too weak.';
+        message = 'The password is too weak. Please use a stronger password.';
       }
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(message)));
+      _showSnackBar(message);
     } finally {
       setState(() {
         _isLoading = false;
@@ -63,14 +68,21 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
+  bool _isValidEmail(String email) {
+    final regex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+    return regex.hasMatch(email);
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Create New Account',
-          style: TextStyle(color: Colors.white),
-        ),
+        title: const Text('Create New Account'),
         backgroundColor: const Color.fromARGB(255, 44, 133, 8),
       ),
       body: Stack(
@@ -84,7 +96,7 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
           ),
           Center(
-            child: Padding(
+            child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Card(
                 elevation: 8,
@@ -106,64 +118,34 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      TextField(
+                      _buildTextField(
                         controller: _emailController,
-                        decoration: const InputDecoration(
-                          labelText: 'Email',
-                          prefixIcon: Icon(Icons.email,
-                              color: Color.fromARGB(255, 44, 133, 8)),
-                          border: OutlineInputBorder(),
-                        ),
+                        label: 'Email',
+                        icon: Icons.email,
+                        keyboardType: TextInputType.emailAddress,
                       ),
                       const SizedBox(height: 16),
-                      TextField(
+                      _buildPasswordField(
                         controller: _passwordController,
-                        obscureText: !_isPasswordVisible, // Toggle visibility
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          prefixIcon: const Icon(Icons.lock,
-                              color: Color.fromARGB(255, 44, 133, 8)),
-                          border: const OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _isPasswordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                              color: Colors.grey,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _isPasswordVisible = !_isPasswordVisible;
-                              });
-                            },
-                          ),
-                        ),
+                        label: 'Password',
+                        isPasswordVisible: _isPasswordVisible,
+                        onVisibilityToggle: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
                       ),
                       const SizedBox(height: 16),
-                      TextField(
+                      _buildPasswordField(
                         controller: _confirmPasswordController,
-                        obscureText:
-                            !_isConfirmPasswordVisible, // Toggle visibility
-                        decoration: InputDecoration(
-                          labelText: 'Confirm Password',
-                          prefixIcon: const Icon(Icons.lock_outline,
-                              color: Color.fromARGB(255, 44, 133, 8)),
-                          border: const OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _isConfirmPasswordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                              color: Colors.grey,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _isConfirmPasswordVisible =
-                                    !_isConfirmPasswordVisible;
-                              });
-                            },
-                          ),
-                        ),
+                        label: 'Confirm Password',
+                        isPasswordVisible: _isConfirmPasswordVisible,
+                        onVisibilityToggle: () {
+                          setState(() {
+                            _isConfirmPasswordVisible =
+                                !_isConfirmPasswordVisible;
+                          });
+                        },
                       ),
                       const SizedBox(height: 20),
                       _isLoading
@@ -181,7 +163,6 @@ class _SignUpPageState extends State<SignUpPage> {
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),
-                      const SizedBox(height: 10),
                     ],
                   ),
                 ),
@@ -193,10 +174,50 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    TextInputType? keyboardType,
+  }) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, color: const Color.fromARGB(255, 44, 133, 8)),
+        border: const OutlineInputBorder(),
+      ),
+      keyboardType: keyboardType,
+    );
+  }
+
+  Widget _buildPasswordField({
+    required TextEditingController controller,
+    required String label,
+    required bool isPasswordVisible,
+    required VoidCallback onVisibilityToggle,
+  }) {
+    return TextField(
+      controller: controller,
+      obscureText: !isPasswordVisible,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon:
+            const Icon(Icons.lock, color: Color.fromARGB(255, 44, 133, 8)),
+        border: const OutlineInputBorder(),
+        suffixIcon: IconButton(
+          icon: Icon(
+            isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+            color: Colors.grey,
+          ),
+          onPressed: onVisibilityToggle,
+        ),
+      ),
+    );
+  }
+
   @override
   void dispose() {
-    _firstNameController.dispose();
-    _surnameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
