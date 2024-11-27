@@ -11,26 +11,25 @@ class CropManagement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appTheme = AppTheme(); // Get the app theme
+    final appTheme = AppTheme();
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: appTheme.appBarColor, // Use appBarColor from AppTheme
+        backgroundColor: appTheme.appBarColor,
         title: Text(
           'Crop Management',
           style: appTheme.textStyle.copyWith(
-            color: appTheme.buttonTextColor, // Title text color from AppTheme
+            color: appTheme.buttonTextColor,
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
       body: Container(
-        height: MediaQuery.of(context).size.height, // Full height of the screen
+        height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image:
-                AssetImage('assets/images/farming.jpg'), // Ensure correct path
-            fit: BoxFit.cover, // Ensures the image covers the entire background
+            image: AssetImage('assets/images/farming.jpg'),
+            fit: BoxFit.cover,
           ),
         ),
         child: SingleChildScrollView(
@@ -43,15 +42,6 @@ class CropManagement extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 150),
-                    // _buildRoundedBox(context, 'Field Operations Records', () {
-                    //   Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => const FieldOperationsPage()),
-                    //   );
-                    // }),
-                    // const SizedBox(height: 15),
-
                     _buildRoundedBox(context, 'Crop Records', () {
                       Navigator.push(
                         context,
@@ -96,7 +86,7 @@ class CropManagement extends StatelessWidget {
 
   Widget _buildRoundedBox(
       BuildContext context, String title, VoidCallback onTap) {
-    final appTheme = AppTheme(); // Get the app theme
+    final appTheme = AppTheme();
 
     return GestureDetector(
       onTap: onTap,
@@ -104,7 +94,7 @@ class CropManagement extends StatelessWidget {
         width: 250,
         height: 55,
         decoration: BoxDecoration(
-          color: appTheme.buttonColor.withOpacity(0.9), // Use buttonColor
+          color: appTheme.buttonColor.withOpacity(0.9),
           borderRadius: BorderRadius.circular(10),
           boxShadow: const [
             BoxShadow(
@@ -120,8 +110,7 @@ class CropManagement extends StatelessWidget {
           child: Text(
             title,
             style: appTheme.textStyle.copyWith(
-              color:
-                  appTheme.buttonTextColor, // Button text color from AppTheme
+              color: appTheme.buttonTextColor,
               fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.center,
