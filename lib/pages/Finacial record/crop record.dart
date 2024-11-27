@@ -128,7 +128,7 @@ class _CropFinancialFormState extends State<CropFinancialForm> {
                       ElevatedButton(
                         onPressed: _submitForm,
                         child: Text('Submit'),
-                        style: ElevatedButton.styleFrom(primary: Colors.green),
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                       ),
                     ],
                   ),
