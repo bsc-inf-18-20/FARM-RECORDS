@@ -27,13 +27,11 @@ class _CropFinancialFormState extends State<CropFinancialForm> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      // Here you can process the entered data
       print("Date: ${_dateController.text}");
       print("Type of Input: ${_typeOfInputController.text}");
       print("Amount Used: ${_amountController.text}");
       print("Total Sales: ${_salesController.text}");
 
-      // Clear the form after submission
       _formKey.currentState!.reset();
       _dateController.clear();
       _typeOfInputController.clear();
@@ -49,54 +47,96 @@ class _CropFinancialFormState extends State<CropFinancialForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Crop Financial Record"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextFormField(
-                controller: _dateController,
-                decoration: InputDecoration(labelText: 'Date'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Please enter the date' : null,
+      body: Stack(
+        children: [
+          // Background Image
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/background.jpg'), // Replace with your image path
+                fit: BoxFit.cover,
               ),
-              SizedBox(height: 10),
-              TextFormField(
-                controller: _typeOfInputController,
-                decoration: InputDecoration(labelText: 'Type of Input'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Please enter the type of input' : null,
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                controller: _amountController,
-                decoration: InputDecoration(labelText: 'Amount of Money Used'),
-                keyboardType: TextInputType.number,
-                validator: (value) =>
-                    value!.isEmpty ? 'Please enter the amount used' : null,
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                controller: _salesController,
-                decoration: InputDecoration(labelText: 'Total Sales Made'),
-                keyboardType: TextInputType.number,
-                validator: (value) =>
-                    value!.isEmpty ? 'Please enter the total sales' : null,
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submitForm,
-                child: Text('Submit'),
-                style: ElevatedButton.styleFrom(primary: Colors.green),
-              ),
-            ],
+            ),
           ),
-        ),
+          // Form Content
+          Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        "Crop Financial Record",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 20),
+                      TextFormField(
+                        controller: _dateController,
+                        decoration: InputDecoration(
+                          labelText: 'Date',
+                          filled: true,
+                          fillColor: Colors.white70,
+                        ),
+                        validator: (value) =>
+                            value!.isEmpty ? 'Please enter the date' : null,
+                      ),
+                      SizedBox(height: 10),
+                      TextFormField(
+                        controller: _typeOfInputController,
+                        decoration: InputDecoration(
+                          labelText: 'Type of Input',
+                          filled: true,
+                          fillColor: Colors.white70,
+                        ),
+                        validator: (value) => value!.isEmpty
+                            ? 'Please enter the type of input'
+                            : null,
+                      ),
+                      SizedBox(height: 10),
+                      TextFormField(
+                        controller: _amountController,
+                        decoration: InputDecoration(
+                          labelText: 'Amount of Money Used',
+                          filled: true,
+                          fillColor: Colors.white70,
+                        ),
+                        keyboardType: TextInputType.number,
+                        validator: (value) =>
+                            value!.isEmpty ? 'Please enter the amount used' : null,
+                      ),
+                      SizedBox(height: 10),
+                      TextFormField(
+                        controller: _salesController,
+                        decoration: InputDecoration(
+                          labelText: 'Total Sales Made',
+                          filled: true,
+                          fillColor: Colors.white70,
+                        ),
+                        keyboardType: TextInputType.number,
+                        validator: (value) =>
+                            value!.isEmpty ? 'Please enter the total sales' : null,
+                      ),
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: _submitForm,
+                        child: Text('Submit'),
+                        style: ElevatedButton.styleFrom(primary: Colors.green),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
